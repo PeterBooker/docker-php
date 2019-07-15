@@ -77,12 +77,12 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-RUN mkdir /var/www/html \
-    && cd /var/www/html \
-    && wget https://github.com/vrana/adminer/releases/download/v4.6.3/adminer-4.6.3.php -O adminer.php
+RUN mkdir /var/www/adminer
 
 ADD init.sh /usr/local/bin/
-	
+
+RUN chmod +x /usr/local/bin/init.sh
+
 VOLUME /var/www/html
 VOLUME /var/www/adminer
 

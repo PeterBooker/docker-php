@@ -64,9 +64,11 @@ RUN apk del -f .build-deps
 RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
 RUN mkdir /var/www/adminer
-	
+
 ADD init.sh /usr/local/bin/
-	
+
+RUN chmod +x /usr/local/bin/init.sh
+
 VOLUME /var/www/html
 VOLUME /var/www/adminer
 
