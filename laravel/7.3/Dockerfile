@@ -18,6 +18,8 @@ RUN apk add --no-cache \
         mysql-client \
         postgresql-libs \
         libintl \
+        libpng \
+        libpng-dev \
         icu \
         icu-dev \
         libzip-dev
@@ -40,6 +42,7 @@ RUN docker-php-ext-install \
     tokenizer \
     xml \
     zip \
+    gd \
     intl
 
 RUN { \
