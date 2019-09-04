@@ -24,6 +24,17 @@ RUN apk add --no-cache \
         icu-dev \
         libzip-dev
 
+RUN apk add --no-cache \
+        freetype \
+        libpng \
+        libjpeg-turbo \
+        freetype-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+    && docker-php-ext-install iconv \
+    && docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install gd
+
 RUN pecl install imagick \
     && pecl install redis
 
