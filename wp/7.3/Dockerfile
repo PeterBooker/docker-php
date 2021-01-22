@@ -1,4 +1,4 @@
-FROM php:7.3.7-fpm-alpine3.10
+FROM php:7.3-fpm-alpine
 
 LABEL maintainer="Peter Booker <mail@peterbooker.com>"
 
@@ -13,7 +13,7 @@ RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     mysqli \
-	opcache \
+    opcache \
     exif
 
 RUN docker-php-ext-enable \
@@ -22,7 +22,7 @@ RUN docker-php-ext-enable \
     pdo \
     pdo_mysql \
     mysqli \
-	opcache \
+    opcache \
     exif
 
 RUN apk add --no-cache --update \
@@ -55,12 +55,12 @@ RUN apk add --update --no-cache autoconf g++ libtool make pcre-dev imagemagick i
 
 RUN { \
     echo 'opcache.memory_consumption=128'; \
-	echo 'opcache.interned_strings_buffer=8'; \
-	echo 'opcache.max_accelerated_files=4000'; \
-	echo 'opcache.revalidate_freq=2'; \
-	echo 'opcache.fast_shutdown=1'; \
-	echo 'opcache.enable_cli=1'; \
-} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=4000'; \
+    echo 'opcache.revalidate_freq=2'; \
+    echo 'opcache.fast_shutdown=1'; \
+    echo 'opcache.enable_cli=1'; \
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN { \
     echo 'upload_max_filesize = 128M'; \
@@ -68,7 +68,7 @@ RUN { \
     echo 'memory_limit = 1G'; \
     echo 'max_execution_time = 600'; \
     echo 'max_input_vars = 5000'; \
-} > /usr/local/etc/php/conf.d/0-upload_large_dumps.ini
+    } > /usr/local/etc/php/conf.d/0-upload_large_dumps.ini
 
 RUN apk del --purge \
     *-dev
@@ -77,17 +77,8 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
     && chmod +x wp-cli.phar \
     && mv wp-cli.phar /usr/local/bin/wp
 
-RUN mkdir /var/www/adminer
-
-ADD init.sh /usr/local/bin/
-
-RUN chmod +x /usr/local/bin/init.sh
-
 VOLUME /var/www/html
-VOLUME /var/www/adminer
 
-ENTRYPOINT ["init.sh"]
-
-CMD ["php-fpm"]
+ENTRYPOINT ["php-fpm"]
 
 EXPOSE 9000
