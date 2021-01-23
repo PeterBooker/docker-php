@@ -1,57 +1,40 @@
-FROM php:7.0-fpm-alpine
+FROM php:8.0-fpm-alpine
 
 LABEL maintainer="Peter Booker <mail@peterbooker.com>"
 
 RUN apk add --no-cache --virtual .build-deps \
+    $PHPIZE_DEPS \
+    curl-dev \
+    imagemagick-dev \
+    libtool \
+    libxml2-dev \
+    postgresql-dev \
+    sqlite-dev
+
+RUN apk add --no-cache \
+    curl \
+    git \
+    mysql-client \
+    postgresql-libs \
+    libintl \
+    libpng \
+    libpng-dev \
+    icu \
+    icu-dev \
+    libzip-dev
+
+RUN apk add --no-cache \
+    freetype \
+    libpng \
+    libjpeg-turbo \
     freetype-dev \
+    libpng-dev \
     libjpeg-turbo-dev \
-    libpng-dev
+    && docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ \
+    && docker-php-ext-install gd
 
-RUN docker-php-ext-install \
-    bcmath \
-    mbstring \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    opcache \
-    exif
-
-RUN docker-php-ext-enable \
-    bcmath \
-    mbstring \
-    pdo \
-    pdo_mysql \
-    mysqli \
-    opcache \
-    exif
-
-RUN apk add --no-cache --update \
-    php7-xml \
-    php7-xmlreader \
-    php7-ftp \
-    php7-json \
-    php7-curl \
-    php7-sockets \
-    php7-zlib \
-    php7-phar \
-    php7-openssl \
-    php7-zip \
-    php7-dev \
-    php7-exif \
-    php7-fileinfo \
-    mysql-client
-
-RUN apk add --no-cache autoconf g++ make \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del autoconf g++ make \
-    && rm -rf /tmp/* /var/cache/apk/*
-
-RUN apk add --update --no-cache autoconf g++ libtool make pcre-dev imagemagick imagemagick-dev \
-    && pecl install imagick \
-    && docker-php-ext-enable imagick \
-    && apk del autoconf g++ libtool make \
-    && rm -rf /tmp/* /var/cache/apk/*
+RUN docker-php-ext-install pcntl zip intl mysqli pdo pdo_mysql && \
+    rm -rf /tmp/*
 
 RUN { \
     echo 'opcache.memory_consumption=128'; \
@@ -70,8 +53,7 @@ RUN { \
     echo 'max_input_vars = 5000'; \
     } > /usr/local/etc/php/conf.d/0-upload_large_dumps.ini
 
-RUN apk del --purge \
-    *-dev
+RUN apk del -f .build-deps
 
 RUN curl -s https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
