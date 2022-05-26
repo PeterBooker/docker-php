@@ -1,4 +1,4 @@
-FROM devilbox/php-fpm:8.0-work
+FROM devilbox/php-fpm:8.1-work
 
 LABEL maintainer="Peter Booker <mail@peterbooker.com>"
 
